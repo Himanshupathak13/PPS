@@ -2,7 +2,6 @@ const express = require("express");
 const router = new express.Router();
 const conn = require("../db/conn");
 const jwt = require('jsonwebtoken');
-//const { changeUser } = require("../db/conn");
 const { sendMail } = require('../app2')
 
 
@@ -127,41 +126,15 @@ router.post('/Forgotpassword', (req, res) => {
 });
 
 
-
-
-//  router.post('/Forgotpassword/:email/:token',(req,res,next) => {
-//     const { email ,password} = req.body;
-//     console.log(req.body);
-//     const sqlShow1 = "SELECT * FROM users WHERE email=? password=? "
-//     conn.query(sqlShow1, [email,password], (err, result) => {
-//     // if(email!== email){
-//     //     res.send('User not registered');
-//     //     return;
-//     // }
-
-//     const secret = JWT_SECRET + {password};
-//     const payload ={
-//         email: {email},
-
-//     };
-//     const token = jwt.sign(payload, secret, { expiresIn: '15m'});
-//     const link = `http:localhost:5000/Reset-password/${email}/${token}`;
-//     console.log(link);
-//     //res.send('password reset link has been sent to your email...');
-
-//  });
-// });
-
-
-
 router.post('/Reset-password/:email/:token', (req, res, next) => {
   const { email, token } = req.params;
   console.log("hii");
-  const { password } = req.body;
+  const { password ,confirmPassword } = req.body;
   console.log(req.body);
-
-
-
+  if(!password || !confirmPassword){
+    res.send("Please Fill password and confirmpassword same");
+  }
+  else{
   const sqlShow2 = `UPDATE users SET password=? WHERE email=?`;
   conn.query(sqlShow2, [password, email], (err, result) => {
     if (err) {
@@ -174,34 +147,20 @@ router.post('/Reset-password/:email/:token', (req, res, next) => {
         const payload = jwt.verify(token, secret);
         console.log(payload);
 
-
-        //res.send("password updated success");
         res.render('Reset-password', { email: jwt.verify.email, status:"verified" });
 
       } catch (error) {
         console.log(error.message);
         res.send(error.message);
       }
-      //res.send(result);
+      
     }
 
-    // const secret = JWT_SECRET;
-    // try {
-    //   const payload = jwt.verify(token, secret);
-    //   console.log(payload);
-
-
-    //   res.send("password updated success");
-    //   res.render('Reset-password', { email: jwt.verify.email, status: "verified" });
-
-    // } catch (error) {
-    //   console.log(error.message);
-    //   res.send(error.message);
-    // }
+    
 
 
   });
-
+ };
 
 });
 
