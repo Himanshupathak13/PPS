@@ -1,8 +1,6 @@
 
 const nodemailer = require('nodemailer')
 const { google } = require('googleapis')
-//const jwt = require('jsonwebtoken');
-
 
 
 const CLIENT_ID = '103652211989-5fsrlff3o20kbtk5bclqhgt8aap7s453.apps.googleusercontent.com'
@@ -13,9 +11,6 @@ const REFRESH_TOKEN = '1//0409EMZcOreg9CgYIARAAGAQSNwF-L9IrLPKHgKxgAM8UUpttPaDQm
 
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN})
-
-//const JWT_SECRET = 'some super secret'
-
 
 
 async function sendMail(email,token) {
@@ -35,14 +30,7 @@ async function sendMail(email,token) {
         }
       })
       
-      // const secret = JWT_SECRET;
-      //     const payload = {
-      //       email: email,
-
-      //     };
-      //     const token = jwt.sign(payload, secret, { expiresIn: '15m' });
-      //     const link = `http://localhost:3001/Reset-password/${email}/${token}`;
-      
+     
       
            
       console.log(email);
@@ -57,8 +45,7 @@ async function sendMail(email,token) {
         <h5>click in this <a href="http://localhost:3001/Reset-password/${email}/${token}">Link</a>`
       };
 
-      //  console.log(email);
-      //  console.log(token);
+     
 
       const result = await transport.sendMail(mailOptions)
       return result
@@ -70,9 +57,7 @@ async function sendMail(email,token) {
     }
 }
 
-//  sendMail(email,token)
-//    .then((result) => console.log('Email sent...', result))
-//    .catch((error) => console.log(error.message));
+
 module.exports={sendMail};
 
   

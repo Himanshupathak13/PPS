@@ -3,8 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import { Link } from 'react-router-dom';
 
-// const emailValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// const passwordValidator = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 
 function Login() {
     const initialValues = { email: "", password: "" };

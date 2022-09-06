@@ -22,9 +22,7 @@ app.get("/",(req,res)=> {
     res.send("Hello from the express");
 });
 
-// app.get('/Forgot-password',(req,res,next) => {
-//     res.render('Forgot-password');
-//  });
+
 
  app.get('/Reset-password/:email/:token',(req,res,next) => {
     const { email, token } = req.params;

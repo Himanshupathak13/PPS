@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-//import {useNavigate} from react-router-dom;
+
 
 
 function Forgotpassword() {
@@ -10,7 +10,7 @@ function Forgotpassword() {
 
     const [formErrors, setFormErrors] = useState({});
     const [isSubmit, setIsSubmit] = useState(false);
-    //const navigate = useNavigate();
+   
 
 
     const handleChange = (e) => {
