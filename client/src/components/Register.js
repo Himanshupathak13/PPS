@@ -264,10 +264,10 @@ function Register() {
                                 <button className="btn btn-warning text-center">Register</button>
                             </div>
 
-                            {Object.keys(formErrors).length === 0 && isSubmit ? (
+                            {/* {Object.keys(formErrors).length === 0 && isSubmit ? (
                                 <div className="text-center alert alert-success">REGISTERED SUCCESSFULLY </div>
                             ) : (<pre className="text-left justify-content">{JSON.stringify(formValues, undefined, 2)}</pre>
-                            )}
+                            )} */}
 
 
 
