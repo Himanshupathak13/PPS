@@ -30,31 +30,19 @@ function Login() {
         }).then((response) => {
             console.log(response)
             if (response.data.status === "success") {
-                // swal("Congrats! "+formValues.email,"Successfully logged in","success");
-                swal({
-                    title: "Congrats! "+response.data.result[0].firstName+" Welcome to your profile page",
-                    text:  "Email:  "+response.data.result[0].email+
-                    "  First Name:  "+response.data.result[0].firstName+
-                    "  lastName:  "+response.data.result[0].lastName+
-                    "  Gender:  "+response.data.result[0].gender,
-                    icon: "success",
-                    button: "Log Out",
-                  });
+                swal("Congrats! " + formValues.email, "Successfully logged in", "success");
+
                 //navigate("/Profile");
-              
+
 
             }
             else if (response.data === "plz fill the data properly") {
-                swal("Hey! Fill all the details properly","","error")
-                
-            }
-            else if (response.data === "plz ") {
-                swal("Hey! Fill all the details properly","","error")
-                
+                swal("Hey! Fill all the details properly", "", "error")
+
             }
             else {
                 console.log(response);
-                swal('wrong username/password',"","error");
+                swal('wrong username/password', "", "error");
             }
 
         });

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import image from './image.jpg'
 
 import Navbar from 'react-bootstrap/Navbar';
 
@@ -17,7 +18,7 @@ const MainContent = () => {
 
             </section>
             <div className='m-2 p-2 ml-2 border-5 border border-dark w-100%' >
-            {/* <img src={image} className="w-100"/> */}
+            <img src={image} className="w-100"/>
             </div>
 
         </div>

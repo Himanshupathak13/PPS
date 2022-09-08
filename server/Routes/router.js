@@ -8,10 +8,11 @@ const bcrypt = require('bcrypt');
 // register user data
 router.post("/create", async (req, res) => {
   const salt = await bcrypt.genSalt(10);
+  
   const hashedPass = await bcrypt.hash(req.body.password, salt)
-  console.log("himan", hashedPass);
 
-  const { file, firstName, lastName, gender, email, securityQuestion, securityAnswer } = req.body;
+  console.log("himan", hashedPass);
+  const { file, firstName, lastName, gender, email, securityQuestion, securityAnswer} = req.body;
 
   if (!file || !firstName || !lastName || !gender || !email || !securityQuestion || !securityAnswer || !hashedPass) {
     const dataerror = {}
@@ -76,7 +77,7 @@ router.post("/create", async (req, res) => {
 
 
 // // // login 
-router.post('/login',(req, res) => {
+router.post('/login', (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   if (!email || !password) {
@@ -88,28 +89,27 @@ router.post('/login',(req, res) => {
 
   } else {
     try {
-      const sqlShow = "SELECT * FROM users WHERE email=? AND password=?"
-      const validPassword = bcrypt.compare(password, result[0].password);
-      conn.query(sqlShow, [email,validPassword], async(err, result) => {
+      
+      const sqlShow = "SELECT * FROM users WHERE email=? "
+      conn.query(sqlShow, [email], async (err, result) => {
+        let validPassword =await bcrypt.compare(req.body.password, result[0].password);
+        console.log(req.body.password)
+        console.log(result[0].password)
+        console.log(validPassword,"succesful")
+        if(validPassword==false){
+          res.send("invalid Password")
+        }
+      
         
-        console.log("result",result)
-        if (result.length > 0) {
-
+       else if (result.length > 0) {
           let successresult = {}
           successresult['result'] = result
           successresult['status'] = 'success'
           console.log("success", successresult);
+          console.log("result", result)
           res.send(successresult);
-          console.log(successresult)
         }
-        else {
-          let errorresult = {}
-          errorresult['error'] = err
-          errorresult['status'] = 'error'
-          console.log("else part", errorresult);
-          res.send(errorresult)
-
-        }
+        
 
       });
     } catch (err) {
@@ -152,16 +152,16 @@ router.post('/Forgotpassword', (req, res) => {
             email: email,
 
           };
-          
+
           const token = jwt.sign(payload, secret, { expiresIn: '15m' });
           const link = `http://localhost:3001/Reset-password/${email}/${token}`;
           console.log(email);
           console.log(token);
           console.log(link);
-          sendMail(email,token)
+          sendMail(email, token)
             .then((result) => console.log('Email sent...', result))
             .catch((error) => console.log(error.message));
-         
+
         }
         else {
           let errorresult = {}
@@ -173,7 +173,7 @@ router.post('/Forgotpassword', (req, res) => {
         }
 
 
-        
+
 
       });
     } catch (err) {
@@ -189,7 +189,7 @@ router.post('/Forgotpassword', (req, res) => {
 
 });
 
-router.post('/Reset-password/:email/:token', async(req, res, next) => {
+router.post('/Reset-password/:email/:token', async (req, res, next) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass1 = await bcrypt.hash(req.body.password, salt)
   console.log("himanshu", hashedPass1);
@@ -213,10 +213,10 @@ router.post('/Reset-password/:email/:token', async(req, res, next) => {
     try {
       const payload = jwt.verify(token, secret);
       console.log(payload);
-      
+
 
       res.send("password updated success");
-      res.render('Reset-password',{email: email});
+      res.render('Reset-password', { email: email });
 
     } catch (error) {
       console.log(error.message);
@@ -227,7 +227,7 @@ router.post('/Reset-password/:email/:token', async(req, res, next) => {
   });
 
 
- });
+});
 
 
 
