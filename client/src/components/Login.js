@@ -124,7 +124,7 @@ function Login() {
                                     <button className="btn btn-warning ml-2">Login</button>
                                 </div>
                                 <div className='col-auto'>
-                                    <Link to="/Forget" className="">Forgot Password?</Link>
+                                    <Link to="/Forgotpassword" className="">Forgot Password?</Link>
                                 </div>
 
                             </div>

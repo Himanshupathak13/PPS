@@ -1,13 +1,14 @@
 const express = require("express");
 const router = new express.Router();
 const conn = require("../db/conn");
+const jwt = require('jsonwebtoken');
+const { sendMail } = require('../app2')
+const JWT_SECRET = 'some super secret'
 const multer = require('multer');
 const path = require('path')
 const cors = require("cors");
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const JWT_SECRET = 'secret'
 const saltRound = 10;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -141,87 +142,108 @@ router.post('/login', (req, res) => {
 
 
 });
-// //forget
 
-// router.post('/forget', (req, res) => {
-//   const { email } = req.body;
-//   console.log(req.body);
-//   if (email.length === 0) {
-//     const dataerror = {}
-//     dataerror['error'] = null
-//     dataerror['status'] = 'error'
-//     console.log("fill data properly", dataerror);
-//     res.send("plz fill the data properly");
+router.post('/Forgotpassword', (req, res) => {
+  const { email } = req.body;
+  console.log(req.body);
+  if (email.length === 0) {
+    const dataerror = {}
+    dataerror['error'] = null
+    dataerror['status'] = 'error'
+    console.log("fill data properly", dataerror);
+    res.send("plz fill the data properly");
 
-//   } else {
-//     try {
-//       const sqlNew = "SELECT * FROM users WHERE email=?"
-//       conn.query(sqlNew, [email], (err, result) => {
-//         if (result.length > 0) {
-//           let successresult = {}
-//           successresult['result'] = result
-//           successresult['status'] = 'success'
-//           console.log("success", successresult);
-//           res.send(successresult);
-//         }
-//         else {
-//           let errorresult = {}
-//           errorresult['error'] = err
-//           errorresult['status'] = 'error'
-//           console.log("else part", errorresult);
-//           res.send(errorresult)
+  } else {
+    try {
+      const sqlNew = "SELECT * FROM users WHERE email=?"
+      conn.query(sqlNew, [email], (err, result) => {
+        if (result.length > 0) {
+          let successresult = {}
+          successresult['result'] = result
+          successresult['status'] = 'success'
+          console.log("success", successresult);
+          res.send(successresult);
+          const secret = JWT_SECRET;
+          const payload = {
+            email: email,
 
-//         }
+          };
 
-//       });
-//     } catch (err) {
-//       let catchresult = {}
+          const token = jwt.sign(payload, secret, { expiresIn: '15m' });
+          const link = `http://localhost:3001/Reset-password/${email}/${token}`;
+          console.log(email);
+          console.log(token);
+          console.log(link);
+          sendMail(email, token)
+            .then((result) => console.log('Email sent...', result))
+            .catch((error) => console.log(error.message));
 
-//       catchresult['error'] = err
-//       catchresult['status'] = 'error'
-//       console.log("catch", catchresult);
-//       res.send(catchresult)
-//     }
-//   }
-//  });
+        }
+        else {
+          let errorresult = {}
+          errorresult['error'] = err
+          errorresult['status'] = 'error'
+          console.log("else part", errorresult);
+          res.send(errorresult)
 
-
-// router.get('/profile', (req, res) => {
-//   try {
-//     const sqlProfile = "SELECT * FROM users;"
-//     conn.query(sqlProfile, (err, result) => {
-//       if (result.length > 0) {
-//         let successresult = {}
-//         successresult['result'] = result
-//         successresult['status'] = 'success'
-//         console.log("success", successresult);
-//         res.send(successresult);
-//         //res.render('profile', { data: result })
-//       }
-//       else {
-//         let errorresult = {}
-//         errorresult['error'] = err
-//         errorresult['status'] = 'error'
-//         console.log("else part", errorresult);
-//         //req.flash()
-//         res.send(errorresult)
-//         //res.render('profile', { data: result })
-
-//       }
-
-//     });
-//   } catch (err) {
-//     let catchresult = {}
-//     catchresult['error'] = err
-//     catchresult['status'] = 'error'
-//     console.log("catch", catchresult);
-//     res.send(catchresult)
-//   }
-// });
+        }
 
 
 
 
+      });
+    } catch (err) {
+      let catchresult = {}
+
+      catchresult['error'] = err
+      catchresult['status'] = 'error'
+      console.log("catch", catchresult);
+      res.send(catchresult)
+    }
+  }
+
+
+});
+
+router.post('/Reset-password/:email/:token', (req, res, next) => {
+  const { email, token } = req.params;
+  console.log("hii");
+  const { password ,confirmPassword } = req.body;
+  console.log(req.body);
+  if(!password || !confirmPassword){
+    res.send("Please Fill password and confirmpassword same")
+  }
+  else{
+  const sqlShow2 = `UPDATE users SET password=? WHERE email=?`;
+  conn.query(sqlShow2, [password, email], (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    else {
+
+      const secret = JWT_SECRET;
+      try {
+        const payload = jwt.verify(token, secret);
+        console.log(payload);
+
+
+      
+        res.render('Reset-password', { email: jwt.verify.email, status:"verified" });
+
+      } catch (error) {
+        console.log(error.message);
+        res.send(error.message);
+      }
+     
+    }
+
+   
+
+  });
+
+  }
+  
+});
 
 module.exports = router;
 

@@ -14,6 +14,7 @@ const Profile = () => {
         }
 
     }, []);
+const prof =`http://localhost:3001/public/upload/${JSON.parse(auth).file}`
     return (
         <>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
@@ -24,7 +25,7 @@ const Profile = () => {
             </section>
             <div className='text-center bg-warning m-2 mt-2 p-2 d-flex aligns-items-center justify-content-md-center'>
             <Card style={{ width: '18rem' }} className="text-center m-5 mt-5 pt-5 p-2 d-flex aligns-items-center justify-content-md-center ">
-                <Card.Img variant="top" src={pg2} />
+                <Card.Img variant="top" src={prof} alt ={pg2} />
                 <Card.Body>
                     <Card.Title>{JSON.parse(auth).firstName}</Card.Title>
                     <Card.Title>{JSON.parse(auth).lastName}</Card.Title>

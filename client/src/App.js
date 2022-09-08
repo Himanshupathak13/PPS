@@ -5,7 +5,7 @@ import FetchNews from './components/FetchNews';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
-import Forget from './components/Forget';
+import Forgotpassword from './components/Forgotpassword';
 import Footer from './components/Footer';
 import Profile from './components/Profile';
 import PageNotFound from './components/PageNotFound';
@@ -31,7 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/Forget" element={<Forget />} />
+        <Route path="/Forgotpassword" element={<Forgotpassword />} /> 
 
         </Routes>
     
