@@ -38,8 +38,9 @@ function Login() {
             console.log(response)
             if (response.data.status === "success") {
                 swal("Congrats! " + formValues.email, "Successfully logged in", "success");
-                localStorage.setItem("new", JSON.stringify(response.data.result[0]));
-                navigate("/Profile");
+                localStorage.setItem("new",JSON.stringify(response.data.result[0]));
+                navigate('/Profile');
+               
 
 
             }

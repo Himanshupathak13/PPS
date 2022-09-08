@@ -30,13 +30,16 @@ const upload = multer({
   }
 });
 //register user data
-router.post("/create", upload.single("file"), (req, res) => {
+router.post("/create", upload.single("file"), async(req, res) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(req.body.password, salt)
+  console.log(hashedPass);
   const file = (req.file) ? req.file.filename : null;
   console.log(req.file);
   console.log(req.file.filename);
   const {
-    firstName, lastName, gender, email, securityQuestion, securityAnswer, password, confirmPassword } = req.body;
-  if (!file || !firstName || !lastName || !gender || !email || !securityQuestion || !securityAnswer || !password || !confirmPassword) {
+    firstName, lastName, gender, email, securityQuestion, securityAnswer } = req.body;
+  if (!file || !firstName || !lastName || !gender || !email || !securityQuestion || !securityAnswer || !hashedPass ) {
     const dataerror = {}
     dataerror['error'] = null
     dataerror['status'] = 'error'
@@ -68,7 +71,7 @@ router.post("/create", upload.single("file"), (req, res) => {
         else {
 
           const sqlInsert = "INSERT INTO users (file,firstName,lastName,gender,email,securityQuestion,securityAnswer,password,confirmPassword) VALUES (?,?,?,?,?,?,?,?,?)";
-          conn.query(sqlInsert, [file, firstName, lastName, gender, email, securityQuestion, securityAnswer, password, confirmPassword], (err, result) => {
+          conn.query(sqlInsert, [file, firstName, lastName, gender, email, securityQuestion, securityAnswer, hashedPass, hashedPass], (err, result) => {
             const successresult = {}
             successresult['result'] = req.body;
             successresult['status'] = 'success'
@@ -95,7 +98,6 @@ router.post("/create", upload.single("file"), (req, res) => {
 
 });
 
-// login 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
@@ -108,24 +110,27 @@ router.post('/login', (req, res) => {
 
   } else {
     try {
-      const sqlShow = "SELECT * FROM users WHERE email=? AND password=?"
-      conn.query(sqlShow, [email, password], (err, result) => {
-        if (result.length > 0) {
+      
+      const sqlShow = "SELECT * FROM users WHERE email=? "
+      conn.query(sqlShow, [email], async (err, result) => {
+        let validPassword =await bcrypt.compare(req.body.password, result[0].password);
+        console.log(req.body.password)
+        console.log(result[0].password)
+        console.log(validPassword,"successful")
+        if(validPassword==false){
+          res.send("invalid Password")
+        }
+      
+        
+       else if (result.length > 0) {
           let successresult = {}
           successresult['result'] = result
           successresult['status'] = 'success'
           console.log("success", successresult);
+          console.log("result", result)
           res.send(successresult);
-          console.log(successresult)
         }
-        else {
-          let errorresult = {}
-          errorresult['error'] = err
-          errorresult['status'] = 'error'
-          console.log("else part", errorresult);
-          res.send(errorresult)
-
-        }
+        
 
       });
     } catch (err) {
@@ -205,7 +210,10 @@ router.post('/Forgotpassword', (req, res) => {
 
 });
 
-router.post('/Reset-password/:email/:token', (req, res, next) => {
+router.post('/Reset-password/:email/:token', async(req, res, next) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass1 = await bcrypt.hash(req.body.password, salt)
+  console.log( hashedPass1);
   const { email, token } = req.params;
   console.log("hii");
   const { password ,confirmPassword } = req.body;
@@ -215,7 +223,7 @@ router.post('/Reset-password/:email/:token', (req, res, next) => {
   }
   else{
   const sqlShow2 = `UPDATE users SET password=? WHERE email=?`;
-  conn.query(sqlShow2, [password, email], (err, result) => {
+  conn.query(sqlShow2, [hashedPass1, email], (err, result) => {
     if (err) {
       console.log(err);
     }
