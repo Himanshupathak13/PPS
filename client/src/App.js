@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import Profile from './components/Profile';
 import PageNotFound from './components/PageNotFound';
 import PrivateComponent from './components/PrivateComponent';
+import LoginAdmin from './components/LoginAdmin';
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/LoginAdmin" element={<LoginAdmin />} />
         <Route path="/Forgotpassword" element={<Forgotpassword />} /> 
 
         </Routes>

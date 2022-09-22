@@ -148,6 +148,55 @@ router.post('/login', (req, res) => {
 
 });
 
+// login admin 
+router.post('/loginadmin', (req, res) => {
+  const { Username, password } = req.body;
+  console.log(req.body);
+  if (!Username || !password) {
+    const dataerror = {}
+    dataerror['error'] = null
+    dataerror['status'] = 'error'
+    console.log("fill data properly", dataerror);
+    res.send("plz fill the data properly");
+
+  } else {
+    try {
+      
+      const sqlShow = "SELECT * FROM admin WHERE Username=? AND password=? "
+      conn.query(sqlShow, [Username, password], async (err, result) => {
+        if (result.length > 0) {
+          let successresult = {}
+          successresult['result'] = result
+          successresult['status'] = 'success'
+          console.log("success", successresult);
+          console.log("result", result)
+          res.send(successresult);
+        } 
+        else{
+            const errorresult = {}
+            errorresult['error'] = err
+            errorresult['status'] = 'error'
+            console.log("error", errorresult);
+            res.send(errorresult)
+        }
+        
+
+      });
+    } catch (err) {
+      let catchresult = {}
+
+      catchresult['error'] = err
+      catchresult['status'] = 'error'
+      console.log("catch", catchresult);
+      res.send(catchresult)
+
+    }
+  }
+
+
+
+});
+
 router.post('/Forgotpassword', (req, res) => {
   const { email } = req.body;
   console.log(req.body);
@@ -252,6 +301,8 @@ router.post('/Reset-password/:email/:token', async(req, res, next) => {
   }
   
 });
+
+
 
 module.exports = router;
 
