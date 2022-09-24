@@ -6,14 +6,15 @@ const bcrypt = require('bcrypt');
 require("./db/conn");
 const router = require("./Routes/router");
 const jwt = require('jsonwebtoken');
-require("./app2");
-
-const JWT_SECRET = 'some super secret'
-
 const path =require('path');
+require("./app2");
 require('dotenv').config({
     path:path.join(__dirname,'.env')
 });
+
+const JWT_SECRET = 'some super secret'
+
+
 
 app.use('/public',express.static('public'));
 app.use(cors());
@@ -45,6 +46,10 @@ app.get('/Reset-password/:email/:token',(req,res,next) => {
        
     }
  });
+
+app.get("*",(req,res)=>{
+    res.render("404",{title:"404"});
+});
    
 
 app.listen(3001, () => {

@@ -41,7 +41,7 @@ const Footer = () => {
                                 <h6 className="text-uppercase fw-bold mb-4">
                                     <i className="fas fa-gem me-3"></i>DIGITAL INDIA
                                 </h6>
-                               
+
                             </div>
                             <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                                 <h6 className="text-uppercase fw-bold mb-4">
@@ -58,7 +58,7 @@ const Footer = () => {
                                 </p>
                                 <p>
                                     <a href="#!" className="text-reset text-decoration-none ">Support Policy</a>
-                                    
+
                                 </p>
                             </div>
                             <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
@@ -84,7 +84,7 @@ const Footer = () => {
                                 <p><i className="fas fa-home me-3"></i> </p>
                                 <p>
                                     <i className="fas fa-envelope me-3"></i>
-            
+
                                 </p>
                                 <p><i className="fas fa-phone me-3"></i></p>
                             </div>

@@ -14,10 +14,14 @@ function Forgotpassword() {
     useEffect(() => {
         const auth = localStorage.getItem('new');
         if (auth) {
-            navigate('/Profile');
+            navigate('/UserProfile');
+        }
+        const auth2 = localStorage.getItem('admin');
+        if (auth2) {
+            navigate('/AdminProfile');
         }
 
-    },[])
+    }, [])
 
 
     const handleChange = (e) => {

@@ -4,19 +4,27 @@ import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 
 function Register() {
-    const initialValues = { file: "", firstName: "", lastName: "", gender: "", email: "", securityQuestion: "", securityAnswer: "", password: "", confirmPassword: "" };
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
-    const [isSubmit, setIsSubmit] = useState(false);
-    const [imagePath, setPath] = useState("");
-    const navigate = useNavigate();
     useEffect(() => {
         const auth = localStorage.getItem('new');
         if (auth) {
-            navigate('/Profile');
+            navigate('/UserProfile');
+        }
+        const auth2 = localStorage.getItem('admin');
+        if (auth2) {
+            navigate('/AdminProfile');
         }
 
     },[])
+    const initialValues = { file: "", firstName: "", lastName: "", gender: "", email: "", securityQuestion: "", securityAnswer: "", password: "", confirmPassword: "" };
+    const emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    const passwordValidator = /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).{10,16}$/;
+    const [formValues, setFormValues] = useState(initialValues);
+    const [formErrors, setFormErrors] = useState(false);
+    const [emailValidation,setEmailValidation]=useState(false);
+    const [passwordValidation,setPasswordValidation] = useState(false);
+    const [confirmValidation,setConfirmValidation] = useState(false);
+    
+    const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({ ...formValues, [name]: value });
@@ -26,12 +34,59 @@ function Register() {
         setFormValues({ ...formValues, file: e.target.files[0] });
 
     };
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setFormErrors(validate(formValues));
-        setPath(process.env.REACT_APP_FILE_PATH.file);
-        setIsSubmit(true);
-        const formdata = new FormData();
+        if (!formValues.file) {
+            setFormErrors(true);
+            return false;
+        }
+        if (!formValues.firstName) {
+          setFormErrors(true);
+            return false;
+         }
+        if (!formValues.lastName) {
+            setFormErrors(true);
+            return false;
+        }
+        if (!formValues.email) {
+            setFormErrors(true);
+            return false;
+        }
+        if(!emailValidator.test(formValues.email)) {
+            setEmailValidation(true);
+                return false;
+         }
+        if (!formValues.gender) {
+             setFormErrors(true);
+            return  formErrors.gender;
+        }
+        if (!formValues.password) {
+           setFormErrors(true);
+            return false;
+        } 
+        if (!passwordValidator.test(formValues.password)) {
+            setPasswordValidation(true);
+                return false;
+        }
+         if (!formValues.confirmPassword) {
+             setFormErrors(true);
+            return false;
+        } 
+        if (formValues.password !==formValues.confirmPassword) {
+           setConfirmValidation(true);
+                return false;
+        }
+        if (!formValues.securityQuestion) {
+            setFormErrors(true);
+            return false;
+            
+        }
+        if (!formValues.securityAnswer) {
+            setFormErrors(true);
+             return false;
+            
+        }
+         const formdata = new FormData();
         formdata.append('file', formValues.file);
         formdata.append('firstName', formValues.firstName);
         formdata.append('lastName', formValues.lastName);
@@ -48,11 +103,11 @@ function Register() {
             console.log(response);
             if (response.data.status === "success") {
                 swal("Congrats! " + formValues.firstName, "Successfully Registered", "success");
-                navigate("/Profile");
-                localStorage.setItem("new", JSON.stringify(response.data.result));
+                navigate("/UserLogin");
+                
                 
             }
-            else if (response.data === "fill the data properly") {
+            else if (response.data.status === "error") {
                 swal("Hey! Fill all the details properly", "", "error");
             }
             else {
@@ -65,66 +120,7 @@ function Register() {
                 }
             }
         });
-
-    };
-    useEffect(() => {
-
-        if (Object.keys(formErrors).length === 0 && isSubmit) {
-            console.log(formValues);
-        }
-        else {
-            console.log(formErrors);
-        }
-    }, [formErrors]);
-
-    const validate = (values) => {
-        const errors = {};
-        const emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-        const passwordValidator = /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).{10,16}$/;
-        if (!values.file) {
-            errors.file = "Upload image";
-
-        }
-        if (!values.firstName) {
-            errors.firstName = "First Name is required";
-
-        }
-        if (!values.lastName) {
-            errors.lastName = "Last Name is required";
-        }
-        if (!values.email) {
-            errors.email = "Email is required!";
-        } else {
-            if (!emailValidator.test(values.email)) {
-                errors.email = "This is not a valid email format!";
-            }
-        }
-        if (!values.gender) {
-            errors.gender = "Gender is required";
-        }
-        if (!values.password) {
-            errors.password = "Password is required!";
-        } else {
-            if (!passwordValidator.test(values.password)) {
-                errors.password = "Password must not contain Whitespaces and should contain at least one uppercase,one lowercase,one special,one digit and password should be the length of 10-16 characters";
-            }
-        }
-        if (!values.confirmPassword) {
-            errors.confirmPassword = "Confirm Password is required";
-        } else {
-            if (values.password !== values.confirmPassword) {
-                errors.confirmPassword = "Password and Confirm Password should be same";
-            }
-        }
-        if (!values.securityQuestion) {
-            errors.securityQuestion = "Security Question is required";
-        }
-        if (!values.securityAnswer) {
-            errors.securityAnswer = "Unique Security Answer is required";
-        }
-
-        return errors;
-    };
+    };   
     return (
 
         <div className="">
@@ -147,10 +143,9 @@ function Register() {
                                     name="file"
                                     placeholder="Upload Image"
                                     accept=".png, .jpg, .jpeg"
-                                    value={imagePath.file}
                                     onChange={ImageUpload} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.file}</p>
+                            {formErrors && !formValues.file && <p className='text-center alert-danger'>Upload image</p>}
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>First Name</label>
@@ -162,7 +157,9 @@ function Register() {
                                     value={formValues.firstName}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.firstName}</p>
+                            {formErrors && !formValues.firstName && <p className='text-center alert-danger'>First Name is required</p>}
+
+                            
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Last Name</label>
@@ -174,7 +171,7 @@ function Register() {
                                     value={formValues.lastName}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.lastName}</p>
+                            {formErrors && !formValues.lastName && <p className='text-center alert-danger'>Last Name is required</p>}
 
 
                             <div className="field mb-3 m-2 text-center form-group">
@@ -191,7 +188,7 @@ function Register() {
                                     <option value="Prefer not to say">Prefer Not to Say</option>
                                 </select>
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.gender}</p>
+                            {formErrors && !formValues.gender && <p className='text-center alert-danger'>Gender is required</p>}
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Email</label>
@@ -203,7 +200,9 @@ function Register() {
                                     value={formValues.email}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.email}</p>
+                            {formErrors && !formValues.email ?<p className='text-center alert-danger'>Email is required</p>:""}
+                            {emailValidation && <p className='text-center alert-danger'>This is not a valid format</p>}
+
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Select Security Question</label>
@@ -221,7 +220,8 @@ function Register() {
                                     <option value="Who is your best friend?">Who is your best friend?</option>
                                 </select>
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.securityQuestion}</p>
+                            {formErrors && !formValues.securityQuestion && <p className='text-center alert-danger'>Security Question is required</p>}
+
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Answer of Security Question</label>
@@ -233,7 +233,8 @@ function Register() {
                                     value={formValues.securityAnswer}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.securityAnswer}</p>
+                            {formErrors && !formValues.securityAnswer && <p className='text-center alert-danger'>Unique Security Answer is required</p>}
+
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Password</label>
@@ -245,7 +246,9 @@ function Register() {
                                     value={formValues.password}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.password}</p>
+                            {formErrors && !formValues.password && <p className='text-center alert-danger'>Password is required</p>}
+                            {passwordValidation && <p className='text-center alert-danger'>Password must not contain Whitespaces and should contain at least one uppercase,one lowercase,one special,one digit and password should be the length of 10-16 characters</p>}
+
 
                             <div className="field mb-3 m-2 text-center form-group">
                                 <label>Confirm Password</label>
@@ -257,18 +260,14 @@ function Register() {
                                     value={formValues.confirmPassword}
                                     onChange={handleChange} />
                             </div>
-                            <p className='text-center alert-danger'>{formErrors.confirmPassword}</p>
+                            {formErrors && !formValues.confirmPassword && <p className='text-center alert-danger'>Confirm Password is required</p>}
+                            {confirmValidation && <p className='text-center alert-danger'>Password and Confirm password should be same</p>}
+
 
 
                             <div className='mb-3 m-2 text-center form-group'>
                                 <button className="btn btn-warning text-center">Register</button>
                             </div>
-
-                            {Object.keys(formErrors).length === 0 && isSubmit ? (
-                                <div className="text-center alert alert-success">REGISTERED SUCCESSFULLY </div>
-                            ) : (<pre className="text-left justify-content">{JSON.stringify(formValues, undefined, 2)}</pre>
-                            )}
-
 
 
                         </form>
@@ -282,15 +281,19 @@ function Register() {
 }
 export default Register;
 
+ //setPath(process.env.REACT_APP_FILE_PATH+formValues.file);
+        //setIsSubmit(true);
 
+ /* 
+                            {Object.keys(formErrors).length === 0 && isSubmit ? (
+                                <div className="text-center alert alert-success">REGISTERED SUCCESSFULLY </div>
+                            ) : (<pre className="text-left justify-content">{JSON.stringify(formValues, undefined, 2)}</pre>
+                            )} */
 
+                            // useEffect(() => {
 
-
-
-
-
-
-
-
-
-
+    //     if (Object.keys(formErrors).length === 0 && isSubmit) {
+    //         console.log(formValues);
+    //     }
+       
+    // }, [formErrors]);

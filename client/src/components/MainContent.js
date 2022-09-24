@@ -18,16 +18,16 @@ const MainContent = () => {
                 <h4 className="p-2 mt-5">WELCOME TO OUR PPS WEBSITE</h4>
 
             </section>
-            <div className='container'>
-                <div class="row justify-content-end">
-                    <div class="col-auto">
-                        <Link to="/Register" className='btn btn-warning'>Register</Link>
-                    </div>
-                    <div class="col-auto">
-                        <Link to="/Login" className='btn btn-warning'>Login</Link>
-                    </div>
+            {/* <div className='container'>
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <Link to="/Register" className='btn btn-warning'>Register</Link>
                 </div>
-            </div>
+                <div class="col-auto">
+                    <Link to="/Login" className='btn btn-warning'>Login</Link>
+                </div>
+                </div>
+            </div> */}
             <div className='m-2 p-2 ml-2 border-5 border border-dark w-100%' >
                 <img src={image} className="w-100" />
             </div>
