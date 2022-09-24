@@ -10,7 +10,7 @@ const AdminDashboard = () => {
   }, [])
 
   const getProducts = async () => {
-    let data = await fetch('http://localhost:3001/showfile')
+    let data = await fetch('http://localhost:3001/admindashboard')
     const result = await data.json();
     setProducts(result);
   }
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   }
 //   const deleteProduct = async (id) => {
 //     console.warn(id)
-//     let result = await fetch(`http://localhost:5000/product/${id}`, {
+//     let result = await fetch(`http://localhost:3001/product/${id}`, {
 //         method: "Delete"
 //     });
 //     result = await result.json();
@@ -35,19 +35,19 @@ const AdminDashboard = () => {
 //     }
 // }
 
-// const searchHandle = async (event)=>{
-//     let key = event.target.value;
-//     if(key){
-//         let result = await fetch(`http://localhost:5000/search/${key}`);
-//         result = await result.json()
-//         if(result){
-//             setProducts(result)
-//         }
-//     }else{
-//         getProducts();
-//     }
+const searchHandle = async (event)=>{
+    let key = event.target.value;
+    if(key){
+        let result = await fetch(`http://localhost:3001/search/${key}`);
+        result = await result.json()
+        if(result){
+            setProducts(result)
+        }
+    }else{
+        getProducts();
+    }
     
-// }
+}
   return (
     <div>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
@@ -60,12 +60,14 @@ const AdminDashboard = () => {
 
       </section>
       <div className='product-list'>
-        {/* <h3>Product List</h3>
+        <h3>Product List</h3>
         <input type="" className='search-product-box' placeholder='Search Product'
           onChange={searchHandle}
-        /> */}
+        />
         <ul>
           <li>S.No.</li>
+          <li>Name</li>
+          <li>Email</li>
           <li>Upload file</li>
           <li>Message</li>
           <li>Operation</li>
@@ -74,6 +76,8 @@ const AdminDashboard = () => {
           products.length > 0 ? products.map((items, index) =>
             <ul>
               <li>{index + 1}</li>
+              <li>{items.firstName}</li>
+              <li>{items.email}</li>
               <li>{items.uploadfile}</li>
               <li>{items.message}</li>
               <li className='m-1 p-0'><button onClick={karloClick}className='m-1 p-0'>View</button>

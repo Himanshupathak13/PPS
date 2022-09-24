@@ -219,13 +219,14 @@ const uploadfile = multer({
     }
   }
 });
-router.post('/upload',uploadfile.single("uploadfile"),(req, res) => {
 
-  const {uploadfile = (req.file) ? req.file.filename : null,idproduct,message} = req.body;
+router.post('/upload', uploadfile.single("uploadfile"), (req, res) => {
+
+  const { uploadfile = (req.file) ? req.file.filename : null, firstName, email, idproduct, message } = req.body;
   console.log(req.body);
   console.log(uploadfile);
 
-  if (!idproduct || !uploadfile || !message) {
+  if (!idproduct || !uploadfile || !message || !firstName || !email) {
     const dataerror = {}
     dataerror['error'] = null
     dataerror['status'] = 'error'
@@ -234,8 +235,8 @@ router.post('/upload',uploadfile.single("uploadfile"),(req, res) => {
 
   } else {
     try {
-      const sqlProduct = "INSERT INTO products (idproduct,uploadfile,message) VALUES (?,?,?)";
-      conn.query(sqlProduct, [idproduct,uploadfile, message], (err, result) => {
+      const sqlProduct = "INSERT INTO products (idproduct,firstName,email,uploadfile,message) VALUES (?,?,?,?,?)";
+      conn.query(sqlProduct, [idproduct, firstName, email, uploadfile, message], (err, result) => {
         const successresult = {}
         successresult['result'] = req.body;
         successresult['status'] = 'success'
@@ -256,39 +257,74 @@ router.post('/upload',uploadfile.single("uploadfile"),(req, res) => {
 
 });
 
-router.get('/showfile',async(req,res)=>{
 
-    try {
-      const sqlShow = "SELECT * FROM products";
-      conn.query(sqlShow,(err, result) => {
-        if (result.length> 0) {
-          let successresult = {}
-          successresult['result'] = result
-          successresult['status'] = 'success'
-          console.log("success", successresult);
-          res.send(result);
-          console.log(successresult)
-        }
-        else {
-          let errorresult = {}
-          errorresult['error'] = err
-          errorresult['status'] = 'error'
-          console.log("else part", errorresult);
-          res.send(errorresult)
+router.post('/userdashboard', (req, res) => {
+  const idproduct = req.body;
+  console.log(idproduct, "answer");
+  try {
+    const sqlShow = "SELECT * FROM products where idproduct=?";
+    conn.query(sqlShow, [idproduct], (err, result) => {
+      if (result.length > 0) {
+        let successresult = {}
+        successresult['result'] = result
+        successresult['status'] = 'success'
+        console.log("success", successresult);
+        res.send(result);
+        console.log(successresult)
+      }
+      else {
+        let errorresult = {}
+        errorresult['error'] = err
+        errorresult['status'] = 'error'
+        console.log("else part", errorresult);
+        res.send(errorresult)
 
-        }
+      }
 
-      });
-    } catch (err) {
-      let catchresult = {}
+    });
+  } catch (err) {
+    let catchresult = {}
 
-      catchresult['error'] = err
-      catchresult['status'] = 'error'
-      console.log("catch", catchresult);
-      res.send(catchresult)
+    catchresult['error'] = err
+    catchresult['status'] = 'error'
+    console.log("catch", catchresult);
+    res.send(catchresult)
 
-    }
-  }); 
+  }
+});
+
+router.get('/admindashboard', async (req, res) => {
+  try {
+    const sqlShow = "SELECT * FROM products";
+    conn.query(sqlShow, (err, result) => {
+      if (result.length > 0) {
+        let successresult = {}
+        successresult['result'] = result
+        successresult['status'] = 'success'
+        console.log("success", successresult);
+        res.send(result);
+        console.log(successresult)
+      }
+      else {
+        let errorresult = {}
+        errorresult['error'] = err
+        errorresult['status'] = 'error'
+        console.log("else part", errorresult);
+        res.send(errorresult)
+
+      }
+
+    });
+  } catch (err) {
+    let catchresult = {}
+
+    catchresult['error'] = err
+    catchresult['status'] = 'error'
+    console.log("catch", catchresult);
+    res.send(catchresult)
+
+  }
+});
 
 router.post('/Forgotpassword', (req, res) => {
   const { email } = req.body;

@@ -11,6 +11,8 @@ const Upload = () => {
   const navigate = useNavigate();
 
   const idproduct = JSON.parse(localStorage.getItem('new')).id;
+  const firstName = JSON.parse(localStorage.getItem('new')).firstName;
+  const email = JSON.parse(localStorage.getItem('new')).email;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +37,8 @@ const Upload = () => {
     formdata.append('uploadfile', formValues.uploadfile);
     formdata.append('message', formValues.message);
     formdata.append('idproduct', idproduct);
+    formdata.append('firstName', firstName);
+    formdata.append('email', email);
 
     axios.post("http://localhost:3001/upload", formdata, {
 
