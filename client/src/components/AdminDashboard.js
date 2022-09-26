@@ -14,40 +14,27 @@ const AdminDashboard = () => {
     const result = await data.json();
     setProducts(result);
   }
-  const karloClick = (e) => {
-    let data = `http://localhost:3001/public/uploadfile/${JSON.parse(auth).uploadfile}`;
-    //<Link to=
-    
-  }
-  const karloDownload = (e) => {
-    let data = `http://localhost:3001/public/uploadfile/${JSON.parse(auth).uploadfile}`;
-    //<Link to=
-    
-  }
-//   const deleteProduct = async (id) => {
-//     console.warn(id)
-//     let result = await fetch(`http://localhost:3001/product/${id}`, {
-//         method: "Delete"
-//     });
-//     result = await result.json();
-//     if (result) {
-//         getProducts();
-//     }
-// }
-
-const searchHandle = async (event)=>{
-    let key = event.target.value;
-    if(key){
-        let result = await fetch(`http://localhost:3001/search/${key}`);
-        result = await result.json()
-        if(result){
-            setProducts(result)
-        }
-    }else{
+  
+    const doDelete = async (uploadfile) => {
+      console.log(uploadfile)
+      const newresult = await fetch(`http://localhost:3001/userdashboard/${uploadfile}`, {
+        method: "Delete"
+      });
+      const newdata = await newresult.json();
+      if (newdata) {
         getProducts();
+      }
     }
+
     
-}
+  const dodownload = async (uploadfile) => {
+    const result = await fetch(`http://localhost:3001/download/${uploadfile}`, {
+      method: "get",
+      responseType: 'blob'
+      })
+    } 
+  
+  
   return (
     <div>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
@@ -60,10 +47,6 @@ const searchHandle = async (event)=>{
 
       </section>
       <div className='product-list'>
-        <h3>Product List</h3>
-        <input type="" className='search-product-box' placeholder='Search Product'
-          onChange={searchHandle}
-        />
         <ul>
           <li>S.No.</li>
           <li>Name</li>
@@ -80,8 +63,9 @@ const searchHandle = async (event)=>{
               <li>{items.email}</li>
               <li>{items.uploadfile}</li>
               <li>{items.message}</li>
-              <li className='m-1 p-0'><button onClick={karloClick}className='m-1 p-0'>View</button>
-                <button onClick={karloClick} className='m-1 p-0'>Download</button>
+              <li className='m-1 p-0'>
+                <button onClick={(e)=>dodownload} className='m-1 p-0'>Download</button>
+                <button onClick={(e)=>doDelete} className='m-1 p-0'>Delete</button>
               </li>
             </ul>
           )

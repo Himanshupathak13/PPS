@@ -211,11 +211,11 @@ const uploadfile = multer({
        fileSize:1024*1024*5,
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype == "application/pdf" || file.mimetype == "application/doc" || file.mimetype == "application/xsl" ) {
+    if (file.mimetype == "application/pdf" || file.mimetype == "application/doc" || file.mimetype == "application/docx"|| file.mimetype == "application/xsl" ) {
       cb(null, true);
     } else {
       cb(null, false);
-      return cb(new Error('Only .doc, .pdf and .xsl format allowed!'));
+      return cb(new Error('Only .doc, docx ,.pdf and .xsl format allowed!'));
     }
   }
 });
@@ -259,11 +259,11 @@ router.post('/upload', uploadfile.single("uploadfile"), (req, res) => {
 
 
 router.post('/userdashboard', (req, res) => {
-  const idproduct = req.body;
+  const idproduct = req.body.idproduct;
   console.log(idproduct, "answer");
   try {
     const sqlShow = "SELECT * FROM products where idproduct=?";
-    conn.query(sqlShow, [idproduct], (err, result) => {
+    conn.query(sqlShow,[idproduct],(err, result) => {
       if (result.length > 0) {
         let successresult = {}
         successresult['result'] = result

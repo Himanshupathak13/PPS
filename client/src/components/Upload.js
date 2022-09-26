@@ -86,7 +86,7 @@ const Upload = () => {
                   type="file"
                   name="uploadfile"
                   placeholder="File"
-                  accept="application/pdf,application/msword,
+                  accept="application/pdf,application/msword,application/docx,
                   application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   //value={formValues.uploadfile}
                   onChange={fileUpload} />
